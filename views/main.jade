@@ -1,0 +1,82 @@
+!!! 5
+html(lang="en")
+  head
+    meta(char-set='utf-8')
+    //if lt IE 9
+        script(src="http://html5shim.googlecode.com/svn/trunk/html5.js")
+    
+    // Mobile Specific Metas
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+    
+    link(rel="stylesheet", href="stylesheets/base.css")
+    link(rel="stylesheet", href="stylesheets/skeleton.css")
+    link(rel="stylesheet", href="stylesheets/layout.css")
+    
+    style
+      .invalid { border: 1px solid #f22; }
+  
+    link(rel="shortcut icon", href="images/favicon.ico")
+    link(rel="apple-touch-icon", href="images/apple-touch-icon.png")
+    link(rel="apple-touch-icon", sizes="72x72", href="images/apple-touch-icon-72x72.png")
+    link(rel="apple-touch-icon", sizes="114x114", href="images/apple-touch-icon-114x114.png")
+
+    title= "Nag.gr"
+    
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js')
+    script(src='javascripts/underscore')
+    script(src='javascripts/backbone')
+    script(src="/socket.io/socket.io.js")
+    script(src="javascripts/app.js")
+    script
+      $(function(){
+        var socket = io.connect('http://localhost/new');
+
+        socket.on('hello',function(){
+          console.log('were friends');
+          c = $("#content");
+          c.append("<input type='text' id='url' placeholder='project url'/>");
+          
+          button = $(document.createElement('button'))
+            .addClass('button')
+            .bind('click',function(){socket.emit('hello',$("#url")[0].value)})
+            .html("Save").attr({id: 'saveButton'});
+
+          c.append(button);
+        });
+
+        socket.on('data_request',function(data){
+          c = $("#content");
+          c.append("<input type='text' id='" + data.id +"' placeholder='" + data.description +"'/>");
+          button = $(document.createElement('button'))
+            .addClass('button')
+            .bind('click',function(){passInData("#"+data.id)})
+            .html("Save").attr({id: 'saveButton'});
+          c.append(button);
+        });
+        
+        socket.on('invalid data',function(id){
+          console.log('invalid data: '+ id);
+          $(id).css('border', '1px solid #f22');
+        });
+        
+        socket.on('good data',function(id){
+          $(id).css('border', '1px solid #ccc');
+        });
+
+        var passInData = function(id){
+          console.log($(id)[0].value);
+          socket.emit('data_response',$(id)[0].value);
+        }
+      });
+
+  body
+    .container
+      .sixteen.columns
+        .row
+          h1.remove-bottom(style="margin-top: 40px")
+            | Nag.gr
+            | <hr />
+        .row
+          #content.twelve.columns.alpha
+          .four.column.omega
+            &nbsp;
