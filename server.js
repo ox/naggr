@@ -1,14 +1,10 @@
 //ExpressJS
 var express = require('express');
 var app = express.createServer();
-var io = require('socket.io').listen(app);
 
 //CouchDB
 var couch = require('couch-client'),
 		db = couch('http://Llama51:dapopo@moxie.iriscouch.com/naggr');
-		
-var miner = require('./miner');
-var set_up = false;
 
 // set rendering views
 app.set('views',__dirname + '/views');
@@ -17,12 +13,6 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.static(__dirname + '/public'));
 
-var root = io.of('/new')
-  .on('connection',function(socket){
-    miner.init(socket);
-    //miner.parse_requests();
-  });
-  
 app.get('/',function(req,res){
   res.redirect('/new');
 });
