@@ -1,0 +1,122 @@
+!!! 5
+html(lang="en")
+  head
+    meta(char-set='utf-8')
+    //if lt IE 9
+        script(src="http://html5shim.googlecode.com/svn/trunk/html5.js")
+    
+    // Mobile Specific Metas
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+    
+    link(rel="stylesheet", href="stylesheets/base.css")
+    link(rel="stylesheet", href="stylesheets/skeleton.css")
+    link(rel="stylesheet", href="stylesheets/layout.css")
+    
+    style
+      .invalid { border: 1px solid #f22; }
+  
+    link(rel="shortcut icon", href="images/favicon.ico")
+    link(rel="apple-touch-icon", href="images/apple-touch-icon.png")
+    link(rel="apple-touch-icon", sizes="72x72", href="images/apple-touch-icon-72x72.png")
+    link(rel="apple-touch-icon", sizes="114x114", href="images/apple-touch-icon-114x114.png")
+
+    title= "Nag.gr/Backbone"
+    
+    script(src='javascripts/jquery.js')
+    script(src='javascripts/underscore.js')
+    script(src='javascripts/backbone.js')
+    // script(src='javascripts/backbone-relational.js')
+    script(src='javascripts/backbone.localStorage.js')
+    script(src="javascripts/app.js")
+  body
+    #app.container
+      .row
+        h1.remove-bottom(style="margin-top: 40px")
+          | Nag.gr/Backbone
+          | <hr />
+      .row
+        #content.six.columns.offset-by-two.alpha
+          form
+            label The Git repository I want to finish
+            input(type='text', id='url')
+            
+            input(type='submit', value='save')
+        .eight.columns.omega
+          blockquote
+            p 
+              | You want to get the last 20% of your project done, but you're having problems
+              | getting motivated. 
+              | <br/><br/>
+              | Use Nag.gr. We bring the heat, you bring the code. Commit to polished projects.
+            cite The Nag.gr team
+      .row
+        #create-task.fourteen.columns.offset-by-two.alpha
+          input#new-task(placeholder='what do you need to do?', type='text')
+      .row
+        #tasks.sixteen.columns.offset-by-two.alpha
+          ul#task-list
+        
+          script
+            $(function(){
+              window.Task = Backbone.Model.extend({
+                clear: function() {
+                  this.destroy();
+                  $(this.view.el).dispose();
+                }
+              });
+
+              window.Tasks = Backbone.Collection.extend({model:Task, localStorage: new Store("tasks") });
+              window.tasks = new Tasks;
+
+              window.TaskView = Backbone.View.extend({
+                tagName: 'li',
+                render: function() {
+                  $(this.el).html(
+                    _.template('<%= content %>', this.model.toJSON())
+                  );
+                  return this;
+                },
+
+                initialize: function() {
+                  _.bindAll(this, 'render');
+                  this.model.view = this;
+                }
+              });
+
+              window.AppView = Backbone.View.extend({
+                el: $("#app"),
+
+                events: {
+                  "keypress #new-task": "createOnEnter"
+                },
+
+                initialize: function() {
+                  _.bindAll(this, 'addOne','addAll');
+
+                  this.input = this.$("#new-task");
+
+                  tasks.bind('add', this.addOne);
+                  tasks.bind('reset', this.addAll);
+                  tasks.bind('all', this.render);
+
+                  tasks.fetch();
+                },
+
+                addOne: function(task) {
+                  var view = new TaskView({model: task});
+                  this.$("#task-list").prepend(view.render().el);
+                },
+
+                addAll: function() {
+                  tasks.each(this.addOne);
+                },
+
+                createOnEnter: function(e) {
+                  if(e.keyCode != 13) return;
+                  tasks.create({content:this.input.val()});
+                  this.input.val('');
+                }
+              });
+
+              app = new AppView;
+            }());

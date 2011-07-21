@@ -14,10 +14,6 @@ app.use(express.cookieParser());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/',function(req,res){
-  res.redirect('/new');
-});
-
-app.get('/new',function(req,res){
 	// db.save({
 	// 		user: req.connection.remoteAddress,
 	// 		action: 'visit',
@@ -29,8 +25,8 @@ app.get('/new',function(req,res){
 	res.render('main',{layout: false})
 });
 
-app.get('/nothing',function(req,res){
-  res.render('main',{layout: false});
+app.get('/backbone',function(req,res){
+  res.render('backbone',{layout: false});
 });
 
 app.listen(3001);
