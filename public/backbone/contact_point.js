@@ -4,8 +4,6 @@ window.ContactPointCollection = Backbone.Collection.extend({
   localStorage: new Store('contact_point')
 });
 
-window.contact_points = new ContactPointCollection;
-
 window.ContactPointView = Backbone.View.extend({
   tagName: 'li',
   

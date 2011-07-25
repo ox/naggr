@@ -12,7 +12,6 @@ window.TaskList = Backbone.Collection.extend({
     return this.last().get('order') + 1; //length can change. The last order can't
   }
 });
-window.tasks = new TaskList;
 
 window.TaskView = Backbone.View.extend({
   tagName: 'li',

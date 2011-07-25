@@ -29,4 +29,8 @@ app.get('/backbone',function(req,res){
   res.render('backbone',{layout: false});
 });
 
+app.get('/messages',function(req,res){
+	res.render('messages',{layout: false});
+});
+
 app.listen(3001);

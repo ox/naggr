@@ -41,17 +41,54 @@ html(lang="en")
         #create-contact-point.one-third.column
           label Contact Points
           input#new-contact-point(placeholder='Twitter, email, phone, etc', type='text').full-width
+        .one-third.column
+          label Projects
+          ul#projects
       .row
         #tasks.one-third.column
           ul#task-list
         #contact-point.one-third.column
           ul#contact-point-list
+        
 
     script(src='backbone/task.js')
     script(src='backbone/contact_point.js')
     script
       $(function(){
-        window.AppView = Backbone.View.extend({
+        window.Project = Backbone.Model.extend({
+          initialize: function() {
+            _.bindAll(this, 'addTask','addAllTasks','addContactPoint','addAllContactPoints');
+
+            this.tasks = new TaskList;
+            this.contact_points = new ContactPointCollection;
+
+            this.tasks.bind('add', this.addTask);
+            this.tasks.bind('reset', this.addAllTasks);
+
+            this.contact_points.bind('add', this.addContactPoint);
+            this.contact_points.bind('reset', this.addAllContactPoints);
+          },
+
+          addTask: function(task) {
+            var view = new TaskView({model: task});
+            $("#task-list").prepend(view.render().el);
+          },
+
+          addAllTasks: function() {
+            this.tasks.each(this.addTask);
+          },
+          
+          addContactPoint: function(contact_point) {
+            var view = new ContactPointView({model: contact_point});
+            $("#contact-point-list").prepend(view.render().el);
+          },
+
+          addAllContactPoints: function() {
+            this.contact_points.each(this.addContactPoint);
+          },
+        });
+      
+        window.ProjectView = Backbone.View.extend({
           el: $("#app"),
 
           events: {
@@ -60,51 +97,26 @@ html(lang="en")
           },
 
           initialize: function() {
-            _.bindAll(this, 'addTask','addAllTasks','addContactPoint','addAllContactPoints');
-
             this.task_input = this.$("#new-task");
             this.contact_point_input = this.$("#new-contact-point");
 
-            tasks.bind('add', this.addTask);
-            tasks.bind('reset', this.addAllTasks);
-            tasks.bind('all', this.render);
-            tasks.fetch();
-            
-            contact_points.bind('add', this.addContactPoint);
-            contact_points.bind('reset', this.addAllContactPoints);
-            contact_points.bind('all', this.render);
-            contact_points.fetch();
-          },
-
-          addTask: function(task) {
-            var view = new TaskView({model: task});
-            this.$("#task-list").prepend(view.render().el);
-          },
-
-          addAllTasks: function() {
-            tasks.each(this.addTask);
-          },
-          
-          addContactPoint: function(contact_point) {
-            var view = new ContactPointView({model: contact_point});
-            this.$("#contact-point-list").append(view.render().el);
-          },
-
-          addAllContactPoints: function() {
-            contact_points.each(this.addContactPoint);
+            this.model.tasks.fetch();
+            this.model.contact_points.fetch();
           },
 
           createTaskOnEnter: function(e) {
             if(e.keyCode != 13) return;
-            tasks.create({content:this.task_input.val(), order: tasks.nextOrder()});
+            this.model.tasks.create({content:this.task_input.val(), order: this.model.tasks.nextOrder()});
             this.task_input.val('');
           },
           createContactPointOnEnter: function(e) {
             if(e.keyCode != 13) return;
-            contact_points.create({content:this.contact_point_input.val()});
+            this.model.contact_points.create({content:this.contact_point_input.val()});
             this.contact_point_input.val('');
           }
         });
 
-        app = new AppView;
+        project = new Project({name: 'big'});
+        view = new ProjectView({model: project});
+        $("#projects").html(_.template("<em><%= name %></em>",project.toJSON()))
       }());
