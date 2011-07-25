@@ -8,9 +8,18 @@ window.MessageView = Backbone.View.extend({
   template : _.template('<%= content %>'),
   
   initialize: function() {
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render','addOne','addAll');
     this.model.bind('change', this.render);
+    this.model.bind('reset',this.addAll);
+    this.model.bind('add', this.addOne);
     this.model.view = this;
+  },
+  addOne: function(message) {
+    var view = new MessageView({model: message});
+    $('#message-list').prepend(view.render().el);
+  },
+  addAll: function() {
+    this.messages.each(this.addOne);
   },
   
   render: function() {
@@ -24,17 +33,7 @@ window.MailBox = Backbone.Model.extend({
     _.bindAll(this, 'addOne', 'addAll');
     this.set({kind: 'MailBox'});
     this.messages = new MessageList;
-    this.messages.bind('reset',this.addAll);
-    this.messages.bind('add', this.addOne);
-    
     this.messages.fetch();
-  },
-  addOne: function(message) {
-    var view = new MessageView({model: message});
-    $('#message-list').prepend(view.render().el);
-  },
-  addAll: function() {
-    this.messages.each(this.addOne);
   }
 });
 
