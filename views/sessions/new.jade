@@ -20,7 +20,7 @@ html(lang="en")
     link(rel="apple-touch-icon", sizes="72x72", href="images/apple-touch-icon-72x72.png")
     link(rel="apple-touch-icon", sizes="114x114", href="images/apple-touch-icon-114x114.png")
 
-    title= "Nag.gr"
+    title= "Nag.gr/Login"
     
     script(src='javascripts/jquery.js')
     script(src='javascripts/underscore.js')
@@ -35,9 +35,14 @@ html(lang="en")
       .sixteen.columns
         .row
           h1.remove-bottom(style="margin-top: 40px")
-            | Nag.gr
+            | Nag.gr/Login
             | <hr />
         .row
-          #content.twelve.columns.alpha
-          .four.column.omega
-            &nbsp;
+          .sixteen.columns.alpha
+            form(action='/sessions', method='POST')
+              input(type='hidden', name='redir',value="redirect")
+              label(for='login') Email:
+              input(type='text', name='login', id='login', autofocus='true')
+              label(for='password') Password:
+              input(type='password', name='password', id='password')
+              input(type='submit', class='submit_button')

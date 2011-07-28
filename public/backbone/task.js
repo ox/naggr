@@ -16,11 +16,12 @@ window.TaskList = Backbone.Collection.extend({
 window.TaskView = Backbone.View.extend({
   tagName: 'li',
   
-  template : _.template('<div class="task"><%= content %></div>'),
+  template : _.template('<div class="task" data-parent="<%= parent %>"><%= content %></div>'),
   
   events: {
     "dblclick .task" : 'beginEditing',
-    'keypress #ced': "saveOnEnter"
+    'keypress #ced': "saveOnEnter",
+    'blur #ced': 'blurCED'
   },
   
   initialize: function() {
@@ -45,6 +46,11 @@ window.TaskView = Backbone.View.extend({
     if(e.keyCode != 13) return;
     this.model.set({'content': this.$("#ced")[0].value}).save();
     $("#ced").blur();
+    this.$(".task").html(this.model.get('content'));
+  },
+
+  blurCED: function() {
+    this.model.set({'content': this.$("#ced")[0].value}).save();
     this.$(".task").html(this.model.get('content'));
   }
 });
