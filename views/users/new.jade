@@ -20,29 +20,28 @@ html(lang="en")
     link(rel="apple-touch-icon", sizes="72x72", href="images/apple-touch-icon-72x72.png")
     link(rel="apple-touch-icon", sizes="114x114", href="images/apple-touch-icon-114x114.png")
 
-    title= "Nag.gr/Messages"
+    title= "Nag.gr"
     
     script(src='javascripts/jquery.js')
     script(src='javascripts/underscore.js')
     script(src='javascripts/backbone.js')
-    //script(src='javascripts/backbone-relational.js')
-    script(src='javascripts/backbone.localStorage.js')
     script(src="javascripts/app.js")
+    script
+      $(function(){
+
+      }());
   body
-    #app.container
-      .row
-        h1.remove-bottom(style="margin-top: 40px")
-          | Nag.gr/Messages
-          | <hr />
-      .row
-        #create-message.one-third.column
-          label Messages
-          input#new-message(placeholder='message', type='text').full-width
-      .row
-        #messages.one-third.column
-          ul#message-list
-      script(src='backbone/messages.js')
-      script
-        $(function(){
-          
-        });
+    .container
+      .sixteen.columns
+        .row
+          h1.remove-bottom(style="margin-top: 40px")
+            | Nag.gr/Register
+            | <hr />
+        .row
+          .sixteen.columns
+            form(action='/users', method='POST')
+            
+              label(for='email') Email:
+              input(type='text', name='email', id='email', autofocus='true')
+
+              input(type='submit', class='submit_button')

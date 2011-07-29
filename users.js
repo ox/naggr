@@ -23,7 +23,10 @@ module.exports.authenticate = function(login,password,callback) {
 		if(err) { log(err.message); callback(null); return;}
 		
 		if(doc == null) { callback(null); return; }
-		if(doc.password == password) { callback(doc); return; }
-		log('retrieved: ' + doc); callback(null);
+		if(password) 
+		  if(doc.password == password) { callback(doc); return; }
+		  else {callback(null); return}
+		    
+		callback(doc);
 	});
 }

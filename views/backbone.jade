@@ -23,10 +23,6 @@ html(lang="en")
     title= "Nag.gr/Backbone"
     
     script(src='javascripts/jquery.js')
-    script(src='javascripts/underscore.js')
-    script(src='javascripts/backbone.js')
-    //script(src='javascripts/backbone-relational.js')
-    script(src='javascripts/backbone.localStorage.js')
     script(src="javascripts/app.js")
   body
     #app.container
@@ -44,91 +40,4 @@ html(lang="en")
           input#new-task(placeholder='what do you need to do?', type='text',style="display:none").full-width
           #tasks
             ul#task-list
-        
-        
-
-    script(src='backbone/task.js')
-    script
-      $(function(){
-        window.Project = Backbone.Model.extend({
-          initialize: function() {
-            _.bindAll(this, 'addTask','addAllTasks');
-
-            this.tasks = new TaskList;
-
-            this.tasks.bind('add', this.addTask);
-            this.tasks.bind('reset', this.addAllTasks);
-
-            this.view = new ProjectView({model: this});
-            $("#projects").html(_.template("<em><%= name %></em>",this.toJSON()))
-          },
-
-          addTask: function(task) {
-            var view = new TaskView({model: task});
-            $("#task-list").prepend(view.render().el);
-          },
-
-          addAllTasks: function() {
-            this.tasks.each(this.addTask);
-          }
-          
-        });
-
-        window.ProjectCollection = Backbone.Collection.extend({
-          model: Project,
-          localStorage: new Store('projects')
-        });
-      
-        window.ProjectView = Backbone.View.extend({
-          el: $("#project"),
-
-          events: {
-            "keypress #new-task": "createTaskOnEnter",
-          },
-
-          initialize: function() {
-            _.bindAll(this, 'render');
-            this.task_input = this.$("#new-task");
-
-            this.model.tasks = this.model.tasks.map(function(task){
-              return task.parent == this.model.id;
-            });
-
-          },
-
-          createTaskOnEnter: function(e) {
-            if(e.keyCode != 13) return;
-            this.model.tasks.create({content:this.task_input.val(), order: this.model.tasks.nextOrder(), parent: this.model.id});
-            this.task_input.val('');
-            $("#new-task").css('display', 'block').attr('data-parent', this.model.id);
-          }
-        });
-        
-        
-        window.ProjectManager = Backbone.View.extend({
-          el: $("#app"),
-          
-          events: {
-            "keypress input#new-project" : "createProjectOnEnter"
-          },
-          
-          initialize: function() {
-            console.log('init');
-            _.bindAll(this, 'render', 'createProjectOnEnter');
-          
-            this.projects = new ProjectCollection;
-            this.current_input = this.$("#new-project");
-          },
-          
-          createProjectOnEnter: function(e) {
-            if(e.keyCode != 13) return;
-            var name_of_new_project = this.current_input.val();
-            this.projects.create({name: name_of_new_project});
-            this.current_input.val('');
-            this.current_input.css('display', 'none');
-          }
-        });
-
-        window.pm = new ProjectManager;
-        
-      }());
+            

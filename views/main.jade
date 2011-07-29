@@ -24,20 +24,39 @@ html(lang="en")
     
     script(src='javascripts/jquery.js')
     script(src='javascripts/underscore.js')
-    script(src='javascripts/backbone.js')
     script(src="javascripts/app.js")
     script
       $(function(){
 
       }());
   body
-    .container
-      .sixteen.columns
-        .row
+    .container      
+      .row
+        .sixteen.columns
           h1.remove-bottom(style="margin-top: 40px")
             | Nag.gr
             | <hr />
-        .row
-          #content.twelve.columns.alpha
-          .four.column.omega
-            &nbsp;
+      .row
+        .eight.columns
+          h3 Finish your Projects, Everytime!
+          p
+            | The saying goes that 80% of the work is in 20% of the project.
+            | Nag.gr shrinks your perceptions of that 80% and helps you break
+            | the project down into managable pieces. It then tracks your
+            | progress and encourages you along the way. 
+            br
+            br
+            | Easily log your progress through your git commits and recieve the support
+            | and encouragement you need in order to drive your project from
+            | protype to finished product.
+            br
+            br
+            | Finish your projects. Commit to polished code.
+        .six.columns.offset-by-two
+          form(action='/', method='POST')
+            - if( typeof flash != 'undefined')
+              - if(typeof flash.error != 'undefined')
+                .invalid= flash.error[0]
+            label(for='email') Signup with your email address:
+            input(type='text', name='email', id='email', autofocus='true')
+            input(type='submit', class='submit_button')
